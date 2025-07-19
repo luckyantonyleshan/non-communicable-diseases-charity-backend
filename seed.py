@@ -11,6 +11,14 @@ with app.app_context():
     db.drop_all()
     db.create_all()
 
+    if not User.query.first():
+        user = User(username="admin", email="admin@example.com", password=generate_password_hash("password"))
+        db.session.add(user)
+        db.session.commit()
+        print("Seeded default user.")
+    else:
+        print("Users already exist.")
+
     u1 = User(username="admin", email="admin@example.com")
     u1.set_password("password")
     db.session.add(u1)
