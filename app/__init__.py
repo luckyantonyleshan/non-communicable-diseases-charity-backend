@@ -1,28 +1,28 @@
 from flask import Flask
-import app.config
-import app.extensions
+from app.config import Config  # Direct import
+from app.extensions import db, migrate, jwt  # Also direct import extensions
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(app.config.Config)  # Explicitly load the Config class
+    app.config.from_object(Config)  # Use the imported Config class directly
 
-    # Import and initialize extensions explicitly
-    from app.extensions import db, migrate, jwt
+    # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
 
-    import app.routes.auth_routes
-    import app.routes.user_routes
-    import app.routes.case_routes
-    import app.routes.donation_routes
-    import app.routes.resource_routes
+    # Import and register blueprints
+    from app.routes.auth_routes import auth_bp
+    from app.routes.user_routes import user_bp
+    from app.routes.case_routes import case_bp
+    from app.routes.donation_routes import donation_bp
+    from app.routes.resource_routes import resource_bp
 
-    app.register_blueprint(app.routes.auth_routes.auth_bp, url_prefix="/auth")
-    app.register_blueprint(app.routes.user_routes.user_bp, url_prefix="/users")
-    app.register_blueprint(app.routes.case_routes.case_bp, url_prefix="/cases")
-    app.register_blueprint(app.routes.donation_routes.donation_bp, url_prefix="/donations")
-    app.register_blueprint(app.routes.resource_routes.resource_bp, url_prefix="/resources")
+    app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(user_bp, url_prefix="/users")
+    app.register_blueprint(case_bp, url_prefix="/cases")
+    app.register_blueprint(donation_bp, url_prefix="/donations")
+    app.register_blueprint(resource_bp, url_prefix="/resources")
 
     @app.route("/")
     def index():
