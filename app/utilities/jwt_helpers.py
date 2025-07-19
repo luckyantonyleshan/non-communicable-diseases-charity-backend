@@ -1,4 +1,6 @@
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from app.models.user import User
 
-def generate_token(user):
-    return create_access_token(identity=user.id)
+def get_current_user():
+    user_id = get_jwt_identity()
+    return User.query.get(user_id)
