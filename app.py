@@ -1,6 +1,6 @@
 from flask import Flask
-from app.extensions import db, migrate, jwt
-from app.config import Config
+from app.utilities.config import Config
+from app.utilities.extensions import db, migrate, jwt
 from app.routes.auth_routes import auth_bp
 from app.routes.user_routes import user_bp
 from app.routes.case_routes import case_bp
@@ -15,11 +15,15 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
 
-    app.register_blueprint(auth_bp, url_prefix='/auth')
-    app.register_blueprint(user_bp, url_prefix='/users')
-    app.register_blueprint(case_bp, url_prefix='/cases')
-    app.register_blueprint(donation_bp, url_prefix='/donations')
-    app.register_blueprint(resource_bp, url_prefix='/resources')
+    app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(user_bp, url_prefix="/users")
+    app.register_blueprint(case_bp, url_prefix="/cases")
+    app.register_blueprint(donation_bp, url_prefix="/donations")
+    app.register_blueprint(resource_bp, url_prefix="/resources")
+
+    @app.route("/")
+    def index():
+        return {"message": "Non-Communicable Diseases Charity API"}
 
     return app
 

@@ -3,4 +3,4 @@ Flask-SQLAlchemy
 Flask-Migrate
 Flask-JWT-Extended
 python-dotenv
-Werkzeug
+psycopg2-binary
