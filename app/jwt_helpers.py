@@ -1,6 +1,6 @@
 from flask_jwt_extended import get_jwt_identity
-from app.models.user import User
+import app.models.user
 
 def get_current_user():
     user_id = get_jwt_identity()
-    return User.query.get(user_id)
+    return app.models.user.User.query.get(user_id)

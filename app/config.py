@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
+print(f"Loaded DATABASE_URI: {os.getenv('DATABASE_URI')}")  # Debug print
 
 class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URI", "sqlite:///instance/db.sqlite3")

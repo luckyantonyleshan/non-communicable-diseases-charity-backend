@@ -1,25 +1,25 @@
 from flask import Flask
-from app.utilities.config import Config
-from app.utilities.extensions import db, migrate, jwt
-from app.routes.auth_routes import auth_bp
-from app.routes.user_routes import user_bp
-from app.routes.case_routes import case_bp
-from app.routes.donation_routes import donation_bp
-from app.routes.resource_routes import resource_bp
+import app.config
+import app.extensions
+import app.routes.auth_routes
+import app.routes.user_routes
+import app.routes.case_routes
+import app.routes.donation_routes
+import app.routes.resource_routes
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(app.config.Config)
 
-    db.init_app(app)
-    migrate.init_app(app, db)
-    jwt.init_app(app)
+    app.extensions.db.init_app(app)
+    app.extensions.migrate.init_app(app, app.extensions.db)
+    app.extensions.jwt.init_app(app)
 
-    app.register_blueprint(auth_bp, url_prefix="/auth")
-    app.register_blueprint(user_bp, url_prefix="/users")
-    app.register_blueprint(case_bp, url_prefix="/cases")
-    app.register_blueprint(donation_bp, url_prefix="/donations")
-    app.register_blueprint(resource_bp, url_prefix="/resources")
+    app.register_blueprint(app.routes.auth_routes.auth_bp, url_prefix="/auth")
+    app.register_blueprint(app.routes.user_routes.user_bp, url_prefix="/users")
+    app.register_blueprint(app.routes.case_routes.case_bp, url_prefix="/cases")
+    app.register_blueprint(app.routes.donation_routes.donation_bp, url_prefix="/donations")
+    app.register_blueprint(app.routes.resource_routes.resource_bp, url_prefix="/resources")
 
     @app.route("/")
     def index():

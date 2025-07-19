@@ -1,35 +1,38 @@
-from app.extensions import db
-from app.models.user import User
-from app.models.case import Case
-from app.models.donation import Donation
-from app.models.resource import Resource
-from app import create_app
+import app.extensions
+import app.models.user
+import app.models.case
+import app.models.donation
+import app.models.resource
+import app
+from werkzeug.security import generate_password_hash
 
-app = create_app()
+app_instance = app.create_app()
 
-with app.app_context():
-    db.drop_all()
-    db.create_all()
+with app_instance.app_context():
+    app.extensions.db.drop_all()
+    app.extensions.db.create_all()
 
-    if not User.query.first():
-        user = User(username="admin", email="admin@example.com", password=generate_password_hash("password"))
-        db.session.add(user)
-        db.session.commit()
+    if not app.models.user.User.query.first():
+        user = app.models.user.User(username="admin", email="admin@example.com")
+        user.set_password("password")
+        app.extensions.db.session.add(user)
+        app.extensions.db.session.commit()
         print("Seeded default user.")
     else:
         print("Users already exist.")
 
-    u1 = User(username="admin", email="admin@example.com")
-    u1.set_password("password")
-    db.session.add(u1)
+    u1 = app.models.user.User(username="user1", email="user1@example.com")
+    u1.set_password("password123")
+    app.extensions.db.session.add(u1)
 
-    c1 = Case(title="Diabetes Awareness", description="Educating people about Type 2 Diabetes.")
-    db.session.add(c1)
+    c1 = app.models.case.Case(title="Diabetes Awareness", description="Educating people about Type 2 Diabetes", user_id=1)
+    app.extensions.db.session.add(c1)
 
-    d1 = Donation(amount=1000, donor_name="John Doe")
-    db.session.add(d1)
+    d1 = app.models.donation.Donation(amount=1000, donor_name="John Doe", user_id=1)
+    app.extensions.db.session.add(d1)
 
-    r1 = Resource(title="Diabetes Guide", url="https://example.com/diabetes-guide")
-    db.session.add(r1)
+    r1 = app.models.resource.Resource(title="Diabetes Guide", url="https://example.com/diabetes-guide")
+    app.extensions.db.session.add(r1)
 
-    db.session.commit()
+    app.extensions.db.session.commit()
+    print("Seeded initial data.")
