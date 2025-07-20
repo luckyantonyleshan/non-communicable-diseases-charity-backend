@@ -1,6 +1,6 @@
-__pycache__/
-.env
-*.pyc
-migrations/__pycache__
-instance/
-*.db
+# __pycache__/
+# .env
+# *.pyc
+# migrations/__pycache__
+# instance/
+# *.db
