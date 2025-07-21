@@ -1,6 +1,7 @@
-import app.extensions
+from app.extensions import db
 
-donation_case = app.extensions.db.Table('donation_case',
-    app.extensions.db.Column('donation_id', app.extensions.db.Integer, app.extensions.db.ForeignKey('donation.id')),
-    app.extensions.db.Column('case_id', app.extensions.db.Integer, app.extensions.db.ForeignKey('case.id'))
+donation_case = db.Table(
+    'donation_case',
+    db.Column('donation_id', db.Integer, db.ForeignKey('donations.id'), primary_key=True),
+    db.Column('case_id', db.Integer, db.ForeignKey('cases.id'), primary_key=True)
 )

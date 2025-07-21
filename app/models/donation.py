@@ -1,8 +1,12 @@
-import app.extensions
+from app.extensions import db
+from app.models.association import donation_case
 
-class Donation(app.extensions.db.Model):
-    id = app.extensions.db.Column(app.extensions.db.Integer, primary_key=True)
-    amount = app.extensions.db.Column(app.extensions.db.Float, nullable=False)
-    donor_name = app.extensions.db.Column(app.extensions.db.String(100), nullable=False)
-    user_id = app.extensions.db.Column(app.extensions.db.Integer, app.extensions.db.ForeignKey('user.id'))
-    cases = app.extensions.db.relationship("Case", secondary="donation_case", back_populates="donations")
+class Donation(db.Model):
+    __tablename__ = "donations"
+
+    id = db.Column(db.Integer, primary_key=True)
+    donor_name = db.Column(db.String(120), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    case_id = db.Column(db.Integer, db.ForeignKey("cases.id"))
+
+    cases = db.relationship("Case", secondary=donation_case, back_populates="donations")

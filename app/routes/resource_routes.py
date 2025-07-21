@@ -1,21 +1,29 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
-import app.models.resource
-import app.extensions
-import app.schemas
+from app.models.resource import Resource
+from app.extensions import db
 
-resource_bp = Blueprint("resources", __name__)
+resource_bp = Blueprint("resources", __name__, url_prefix="/resources")
 
 @resource_bp.route("/", methods=["GET"])
 def get_resources():
-    resources = app.models.resource.Resource.query.all()
-    return jsonify([app.schemas.resource_schema(r) for r in resources])
+    resources = Resource.query.all()
+    return jsonify([{
+        "id": resource.id,
+        "title": resource.title,
+        "url": resource.url
+    } for resource in resources]), 200
 
 @resource_bp.route("/", methods=["POST"])
-@jwt_required()
 def create_resource():
     data = request.get_json()
-    resource = app.models.resource.Resource(title=data["title"], url=data["url"])
-    app.extensions.db.session.add(resource)
-    app.extensions.db.session.commit()
-    return jsonify(app.schemas.resource_schema(resource)), 201
+    if not data or not data.get("title") or not data.get("url"):
+        return jsonify({"error": "Title and URL are required"}), 400
+
+    resource = Resource(title=data["title"], url=data["url"])
+    db.session.add(resource)
+    db.session.commit()
+    return jsonify({
+        "id": resource.id,
+        "title": resource.title,
+        "url": resource.url
+    }), 201

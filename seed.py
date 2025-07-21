@@ -1,38 +1,31 @@
-import app.extensions
-import app.models.user
-import app.models.case
-import app.models.donation
-import app.models.resource
-import app
-from werkzeug.security import generate_password_hash
+from app import create_app
+from app.extensions import db
+from app.models.user import User
+from app.models.case import Case
+from app.models.donation import Donation
+from app.models.resource import Resource
 
-app_instance = app.create_app()
+app = create_app()
 
-with app_instance.app_context():
-    app.extensions.db.drop_all()
-    app.extensions.db.create_all()
+with app.app_context():
+    db.drop_all()
+    db.create_all()
 
-    if not app.models.user.User.query.first():
-        user = app.models.user.User(username="admin", email="admin@example.com")
-        user.set_password("password")
-        app.extensions.db.session.add(user)
-        app.extensions.db.session.commit()
-        print("Seeded default user.")
-    else:
-        print("Users already exist.")
+    user = User(username="admin", email="admin@example.com")
+    user.set_password("password123")
+    db.session.add(user)
+    db.session.commit()
 
-    u1 = app.models.user.User(username="user1", email="user1@example.com")
-    u1.set_password("password123")
-    app.extensions.db.session.add(u1)
+    case = Case(title="Diabetes Awareness", description="Educate on diabetes", user_id=user.id)
+    db.session.add(case)
+    db.session.commit()
 
-    c1 = app.models.case.Case(title="Diabetes Awareness", description="Educating people about Type 2 Diabetes", user_id=1)
-    app.extensions.db.session.add(c1)
+    donation = Donation(amount=100.0, donor_name="John Doe", user_id=user.id)
+    db.session.add(donation)
+    db.session.commit()
 
-    d1 = app.models.donation.Donation(amount=1000, donor_name="John Doe", user_id=1)
-    app.extensions.db.session.add(d1)
+    resource = Resource(title="Diabetes Guide", url="https://example.com/guide")
+    db.session.add(resource)
+    db.session.commit()
 
-    r1 = app.models.resource.Resource(title="Diabetes Guide", url="https://example.com/diabetes-guide")
-    app.extensions.db.session.add(r1)
-
-    app.extensions.db.session.commit()
-    print("Seeded initial data.")
+    print("Database seeded successfully!")

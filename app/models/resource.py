@@ -1,6 +1,8 @@
-import app.extensions
+from app.extensions import db
 
-class Resource(app.extensions.db.Model):
-    id = app.extensions.db.Column(app.extensions.db.Integer, primary_key=True)
-    title = app.extensions.db.Column(app.extensions.db.String(120), nullable=False)
-    url = app.extensions.db.Column(app.extensions.db.String(200), nullable=False)
+class Resource(db.Model):
+    __tablename__ = 'resource'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(120), nullable=False)
+    url = db.Column(db.String(200), nullable=False)

@@ -1,31 +1,22 @@
 from flask import Flask
-from app.config import Config  # Direct import
-from app.extensions import db, migrate, jwt  # Also direct import extensions
+from app.extensions import db, migrate, jwt, cors
+from app.config import Config
 
 def create_app():
-    app = Flask(__name__)
-    app.config.from_object(Config)  # Use the imported Config class directly
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_object(Config)
 
-    # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+    cors.init_app(app)
 
-    # Import and register blueprints
-    from app.routes.auth_routes import auth_bp
-    from app.routes.user_routes import user_bp
-    from app.routes.case_routes import case_bp
-    from app.routes.donation_routes import donation_bp
-    from app.routes.resource_routes import resource_bp
+    from app.models.user import User
+    from app.models.case import Case
+    from app.models.donation import Donation
+    from app.models.resource import Resource
 
-    app.register_blueprint(auth_bp, url_prefix="/auth")
-    app.register_blueprint(user_bp, url_prefix="/users")
-    app.register_blueprint(case_bp, url_prefix="/cases")
-    app.register_blueprint(donation_bp, url_prefix="/donations")
-    app.register_blueprint(resource_bp, url_prefix="/resources")
-
-    @app.route("/")
-    def index():
-        return {"message": "Non-Communicable Diseases Charity API"}
+    from app.routes import register_routes
+    register_routes(app)
 
     return app
