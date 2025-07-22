@@ -5,44 +5,47 @@ from app.models.case import Case
 from app.models.donation import Donation
 from app.models.resource import Resource
 
-app = create_app()
+def seed_database():
+    app = create_app()
+    
+    with app.app_context():
+        # Only seed if no users exist
+        if not User.query.first():
+            user = User(
+                username="admin",
+                email="admin@example.com"
+            )
+            user.set_password("password123")
+            db.session.add(user)
+            db.session.commit()
 
-with app.app_context():
-    db.drop_all()
-    db.create_all()
+            case = Case(
+                title="Diabetes Awareness",
+                description="Educate about diabetes prevention",
+                amount_needed=5000.00,
+                amount_received=0.00,
+                user_id=user.id
+            )
+            db.session.add(case)
 
-    user = User(
-        username="admin",
-        email="admin@example.com"
-    )
-    user.set_password("password123")
-    db.session.add(user)
-    db.session.commit()
+            donation = Donation(
+                amount=100.00,
+                donor_name="John Doe",
+                user_id=user.id,
+                case_id=case.id  
+            )
+            db.session.add(donation)
 
-    case = Case(
-        title="Diabetes Awareness",
-        description="Educate about diabetes prevention",
-        amount_needed=5000.00,
-        amount_received=0.00,
-        user_id=user.id
-    )
-    db.session.add(case)
-    db.session.commit()
+            resource = Resource(
+                title="Diabetes Guide",
+                url="https://example.com/diabetes-guide"
+            )
+            db.session.add(resource)
 
-    donation = Donation(
-        amount=100.00,
-        donor_name="John Doe",
-        user_id=user.id,
-        case_id=case.id  
-    )
-    db.session.add(donation)
-    db.session.commit()
+            db.session.commit()
+            print("Database seeded successfully!")
+        else:
+            print("Database already contains data - skipping seed")
 
-    resource = Resource(
-        title="Diabetes Guide",
-        url="https://example.com/diabetes-guide"
-    )
-    db.session.add(resource)
-    db.session.commit()
-
-    print("Database seeded successfully!")
+if __name__ == "__main__":
+    seed_database()

@@ -3,10 +3,26 @@ services:
     name: non-communicable-diseases-api
     env: python
     plan: free
-    buildCommand: "pip install pipenv && pipenv install --system"
-    startCommand: "gunicorn app:app"
+    region: oregon
+    buildCommand: |
+      pip install -r requirements.txt
+      flask db upgrade
+    startCommand: gunicorn --worker-tmp-dir /dev/shm app:app
     envVars:
       - key: DATABASE_URI
-        value: YOUR_DATABASE_URL
+        fromDatabase:
+          name: ncd-database
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
       - key: JWT_SECRET_KEY
-        value: supersecretkey
+        generateValue: true
+      - key: FLASK_APP
+        value: app.py
+      - key: PYTHON_VERSION
+        value: 3.8.10
+
+  - type: postgres
+    name: ncd-database
+    plan: free
+    region: oregon
