@@ -10,14 +10,12 @@ services:
     startCommand: gunicorn --worker-tmp-dir /dev/shm wsgi:app  
     envVars:
       - key: DATABASE_URI
-        fromDatabase:
-          name: ncd-database
-          property: connectionString
+        value: postgresql://ncd_database_jmon_user:7BLUI9QzXudbG5KNguVOEF6QfkcTpukL@dpg-d1vq4nmmcj7s73fl1adg-a/ncd_database_jmon
       - key: SECRET_KEY
-        generateValue: true
+        value: c36ff3a5bf1a288d81e39e5c16c28a31ee5ee16ed95c6d8967878a47a181a7f5
       - key: JWT_SECRET_KEY
-        generateValue: true
+        value: a5ef8f79bd08a45b620730527b25eeaf7d226d1b868ceaf51029c20eb31b012e
       - key: FLASK_APP
         value: wsgi.py  
       - key: PYTHON_VERSION
-        value: 3.8.10
+        value: 3.13.4
