@@ -7,7 +7,7 @@ services:
     buildCommand: |
       pip install -r requirements.txt
       flask db upgrade
-    startCommand: gunicorn --worker-tmp-dir /dev/shm app:app
+    startCommand: gunicorn --worker-tmp-dir /dev/shm wsgi:app  
     envVars:
       - key: DATABASE_URI
         fromDatabase:
@@ -18,11 +18,6 @@ services:
       - key: JWT_SECRET_KEY
         generateValue: true
       - key: FLASK_APP
-        value: app.py
+        value: wsgi.py  
       - key: PYTHON_VERSION
         value: 3.8.10
-
-  - type: postgres
-    name: ncd-database
-    plan: free
-    region: oregon
