@@ -9,5 +9,6 @@ class Case(db.Model):
     description = db.Column(db.Text, nullable=False)
     amount_needed = db.Column(db.Float, nullable=False)
     amount_received = db.Column(db.Float, default=0.0)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Added this line
 
     donations = db.relationship("Donation", secondary=donation_case, back_populates="cases")
