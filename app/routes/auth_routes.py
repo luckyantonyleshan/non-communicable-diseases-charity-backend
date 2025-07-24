@@ -31,5 +31,5 @@ def login():
     if not user or not user.check_password(data["password"]):
         return jsonify({"error": "Invalid credentials"}), 401
 
-    token = create_access_token(identity=str(user.id))  # Convert user.id to string
+    token = create_access_token(identity=user.id)  # Pass user.id as integer
     return jsonify({"access_token": token}), 200

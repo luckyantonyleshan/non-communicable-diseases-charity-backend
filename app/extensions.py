@@ -8,8 +8,19 @@ migrate = Migrate()
 jwt = JWTManager()
 cors = CORS(resources={
     r"/*": {
-        "origins": ["*"],  # For development only, restrict in production
+        "origins": ["*"],
         "methods": ["GET", "POST", "PUT", "DELETE"],
         "allow_headers": ["Content-Type", "Authorization"]
     }
 })
+
+def configure_jwt(app):
+    from app.models.user import User  # Lazy import
+    @jwt.user_identity_loader
+    def user_identity_lookup(user):
+        return user  # Return the identity (integer user.id) directly
+
+    @jwt.user_lookup_loader
+    def user_lookup_callback(_jwt_header, jwt_data):
+        identity = jwt_data["sub"]
+        return User.query.get(int(identity))  # Retrieve User object using ID
