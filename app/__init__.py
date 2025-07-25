@@ -1,10 +1,14 @@
 from flask import Flask
 from app.extensions import db, migrate, jwt, cors, configure_jwt
 from app.config import Config
+from flask_cors import CORS  # Import flask-cors
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(Config)
+
+    # Initialize CORS with allowed origins
+    CORS(app, resources={r"/auth/*": {"origins": ["http://127.0.0.1:5173", "https://non-communicable-diseases-charity-api.onrender.com"]}})
 
     # Initialize extensions
     db.init_app(app)
