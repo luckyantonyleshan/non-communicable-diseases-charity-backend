@@ -7,6 +7,8 @@ from app.routes.review_routes import review_bp
 from app.routes.donation_routes import donation_bp
 from app.routes.disease_routes import disease_bp
 from app.routes.resource_routes import resource_bp
+from app.routes.admin_routes import admin_bp
+
 
 def register_routes(app):
     app.register_blueprint(auth_bp)
@@ -17,3 +19,4 @@ def register_routes(app):
     app.register_blueprint(donation_bp)
     app.register_blueprint(disease_bp)
     app.register_blueprint(resource_bp)
+    app.register_blueprint(admin_bp)

@@ -28,5 +28,5 @@ class Config:
         SQLALCHEMY_DATABASE_URI = 'sqlite:///instance/dev.db'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key')
-    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'fallback-jwt-key')
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key-for-development-only')
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', SECRET_KEY)  # Use SECRET_KEY as fallback

@@ -2,10 +2,8 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.user import User
 from app.extensions import db
-import logging
 
 user_bp = Blueprint('users', __name__, url_prefix='/users')
-logger = logging.getLogger(__name__)
 
 @user_bp.route('/me', methods=['GET'])
 @jwt_required()
@@ -20,18 +18,43 @@ def get_current_user():
             'id': user.id,
             'username': user.username,
             'email': user.email,
-            'role': user.role
+            'role': user.role,
+            'created_at': user.created_at.isoformat() if user.created_at else None
         }), 200
     except Exception as e:
-        logger.error(f"Get current user error: {str(e)}")
-        return jsonify({'error': 'Internal server error'}), 500
+        return jsonify({'error': str(e)}), 500
+
+@user_bp.route('/', methods=['GET'])
+@jwt_required()
+def get_all_users():
+    try:
+        current_user_id = get_jwt_identity()
+        current_user = User.query.get(current_user_id)
+        
+        if not current_user or current_user.role != 'admin':
+            return jsonify({'error': 'Admin access required'}), 403
+
+        users = User.query.all()
+        return jsonify({
+            'users': [{
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'role': user.role,
+                'created_at': user.created_at.isoformat() if user.created_at else None
+            } for user in users]
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @user_bp.route('/<int:user_id>/role', methods=['PATCH'])
 @jwt_required()
 def update_user_role(user_id):
     try:
-        current_user = User.query.get(get_jwt_identity())
-        if current_user.role != 'admin':
+        current_user_id = get_jwt_identity()
+        current_user = User.query.get(current_user_id)
+        
+        if not current_user or current_user.role != 'admin':
             return jsonify({'error': 'Admin access required'}), 403
 
         user = User.query.get(user_id)
@@ -57,6 +80,5 @@ def update_user_role(user_id):
             }
         }), 200
     except Exception as e:
-        logger.error(f"Update role error: {str(e)}")
         db.session.rollback()
-        return jsonify({'error': 'Role update failed'}), 500
+        return jsonify({'error': str(e)}), 500

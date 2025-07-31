@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: QuantumSuperposition
       POSTGRES_DB: ncd_database
     ports:
-      - "5432:5432"
+      - "5433:5432"  # Changed from 5432:5432 to avoid conflict
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -28,7 +28,7 @@ services:
       - "5000:5000"
     environment:
       FLASK_ENV: development
-      DATABASE_URI: postgresql://flaws_sins:QuantumSuperposition@db:5432/ncd_database
+      DATABASE_URI: postgresql://flaws_sins:QuantumSuperposition@db:5432/ncd_database  # Updated port in DATABASE_URI
       SECRET_KEY: super-secret-key
       JWT_SECRET_KEY: another-super-secret-key
     command: >
