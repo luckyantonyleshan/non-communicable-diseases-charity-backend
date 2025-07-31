@@ -19,3 +19,4 @@ services:
         value: wsgi.py  
       - key: PYTHON_VERSION
         value: 3.13.4
+        
