@@ -1,13 +1,14 @@
 services:
   - type: web
     name: non-communicable-diseases-api
-    env: python
+    env: docker
     plan: free
     region: oregon
-    buildCommand: |
-      pip install -r requirements.txt
-      flask db upgrade
-    startCommand: gunicorn --worker-tmp-dir /dev/shm wsgi:app  
+    dockerfilePath: ./Dockerfile
+    startCommand: >
+      sh -c "flask db upgrade &&
+             python seed.py &&
+             gunicorn --worker-tmp-dir /dev/shm wsgi:app"
     envVars:
       - key: DATABASE_URI
         value: postgresql://ncd_database_ijt9_user:CIM7AoWsoyykE0tIgTLa7hY2sYvYtcs3@dpg-d25c2pm3jp1c73d6csgg-a.oregon-postgres.render.com/ncd_database_ijt9
@@ -15,8 +16,7 @@ services:
         value: c36ff3a5bf1a288d81e39e5c16c28a31ee5ee16ed95c6d8967878a47a181a7f5
       - key: JWT_SECRET_KEY
         value: a5ef8f79bd08a45b620730527b25eeaf7d226d1b868ceaf51029c20eb31b012e
+      - key: FLASK_ENV
+        value: production
       - key: FLASK_APP
-        value: wsgi.py  
-      - key: PYTHON_VERSION
-        value: 3.13.4
-        
+        value: wsgi.py

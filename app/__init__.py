@@ -63,6 +63,10 @@
 from flask import Flask
 from flask_cors import CORS
 from app.extensions import db, migrate, jwt, cors
+from flask_admin import Admin
+
+
+admin = Admin()
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
@@ -83,6 +87,7 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
     cors.init_app(app)
+    admin.init_app(app)
 
     # Import and register blueprints
     from app.routes.auth_routes import auth_bp
