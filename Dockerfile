@@ -1,25 +1,29 @@
-# Use a lightweight Python image
 FROM python:3.8-slim
 
-# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Create app directory
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y build-essential libpq-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    wget \
+    --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
+# Get wait-for-it.sh
+RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/local/bin/wait-for-it.sh && \
+    chmod +x /usr/local/bin/wait-for-it.sh
 
 # Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the app code
+# Copy application code
 COPY . .
 
-# Expose port
 EXPOSE 5000
 
-# Start the app using Gunicorn
 CMD ["gunicorn", "--worker-tmp-dir", "/dev/shm", "wsgi:app"]
