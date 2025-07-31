@@ -10,7 +10,7 @@ services:
     startCommand: gunicorn --worker-tmp-dir /dev/shm wsgi:app  
     envVars:
       - key: DATABASE_URI
-        value: postgresql://ncd_database_jmon_user:7BLUI9QzXudbG5KNguVOEF6QfkcTpukL@dpg-d1vq4nmmcj7s73fl1adg-a/ncd_database_jmon
+        value: postgresql://ncd_database_ijt9_user:CIM7AoWsoyykE0tIgTLa7hY2sYvYtcs3@dpg-d25c2pm3jp1c73d6csgg-a.oregon-postgres.render.com/ncd_database_ijt9
       - key: SECRET_KEY
         value: c36ff3a5bf1a288d81e39e5c16c28a31ee5ee16ed95c6d8967878a47a181a7f5
       - key: JWT_SECRET_KEY
