@@ -4,12 +4,17 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-flask = "*"
-flask-sqlalchemy = "*"
-flask-migrate = "*"
-flask-jwt-extended = "*"
-flask-cors = "*"
-python-dotenv = "*"
+flask = "==2.3.2"
+werkzeug = "==2.3.7"
+flask-sqlalchemy = "==3.0.3"
+flask-migrate = "==4.0.4"
+flask-jwt-extended = "==4.6.0"
+flask-cors = "==3.0.10"
+python-dotenv = "==1.0.0"
+psycopg2-binary = "==2.9.10"
+gunicorn = "==23.0.0"
+alembic = "==1.13.1"
+flask-bcrypt = "==1.0.1"
 
 [dev-packages]
 pytest = "*"
