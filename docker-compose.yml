@@ -1,3 +1,44 @@
+# version: '3.8'
+
+# services:
+#   db:
+#     image: postgres:13
+#     environment:
+#       POSTGRES_USER: flaws_sins
+#       POSTGRES_PASSWORD: QuantumSuperposition
+#       POSTGRES_DB: ncd_database
+#     ports:
+#       - "5433:5432"  # Changed from 5432:5432 to avoid conflict
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U flaws_sins -d ncd_database"]
+#       interval: 5s
+#       timeout: 5s
+#       retries: 5
+
+#   web:
+#     build: 
+#       context: .
+#       dockerfile: Dockerfile
+#     depends_on:
+#       db:
+#         condition: service_healthy
+#     ports:
+#       - "5000:5000"
+#     environment:
+#       FLASK_ENV: development
+#       DATABASE_URI: postgresql://flaws_sins:QuantumSuperposition@db:5432/ncd_database  # Updated port in DATABASE_URI
+#       SECRET_KEY: super-secret-key
+#       JWT_SECRET_KEY: another-super-secret-key
+#     command: >
+#       sh -c "flask db upgrade &&
+#              python seed.py &&
+#              gunicorn --worker-tmp-dir /dev/shm --bind 0.0.0.0:5000 wsgi:app"
+
+# volumes:
+#   postgres_data:
+
 version: '3.8'
 
 services:
@@ -8,7 +49,7 @@ services:
       POSTGRES_PASSWORD: QuantumSuperposition
       POSTGRES_DB: ncd_database
     ports:
-      - "5433:5432"  # Changed from 5432:5432 to avoid conflict
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -18,7 +59,7 @@ services:
       retries: 5
 
   web:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     depends_on:
@@ -28,11 +69,15 @@ services:
       - "5000:5000"
     environment:
       FLASK_ENV: development
-      DATABASE_URI: postgresql://flaws_sins:QuantumSuperposition@db:5432/ncd_database  # Updated port in DATABASE_URI
+      DATABASE_URI: postgresql://flaws_sins:QuantumSuperposition@db:5432/ncd_database
       SECRET_KEY: super-secret-key
       JWT_SECRET_KEY: another-super-secret-key
+    volumes:
+      - ./migrations:/app/migrations  # Critical persistence
+      - .:/app  # For code changes
     command: >
-      sh -c "flask db upgrade &&
+      sh -c "mkdir -p /app/migrations/versions &&
+             flask db upgrade &&
              python seed.py &&
              gunicorn --worker-tmp-dir /dev/shm --bind 0.0.0.0:5000 wsgi:app"
 
