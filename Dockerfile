@@ -26,4 +26,5 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["gunicorn", "--worker-tmp-dir", "/dev/shm", "wsgi:app"]
+# CMD ["gunicorn", "--worker-tmp-dir", "/dev/shm", "wsgi:app"]
+CMD ["sh", "-c", "flask db upgrade && gunicorn --worker-tmp-dir /dev/shm --bind 0.0.0.0:$PORT wsgi:app"]
