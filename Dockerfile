@@ -50,7 +50,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Create migrations directory
-RUN mkdir -p /app/migrations/versions
+# RUN mkdir -p /app/migrations/versions
 
 COPY . .
 
