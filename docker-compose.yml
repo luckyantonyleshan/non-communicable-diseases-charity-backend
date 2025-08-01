@@ -73,8 +73,8 @@ services:
       SECRET_KEY: super-secret-key
       JWT_SECRET_KEY: another-super-secret-key
     volumes:
-      - ./migrations:/app/migrations  # Critical persistence
-      - .:/app  # For code changes
+      - ./migrations:/app/migrations 
+      - .:/app  
     command: >
       sh -c "mkdir -p /app/migrations/versions &&
              flask db upgrade &&

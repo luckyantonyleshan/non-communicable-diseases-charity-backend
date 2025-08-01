@@ -23,7 +23,6 @@ def create_donation():
         if not all(key in data for key in ["amount", "donor_name"]):
             return jsonify({"error": "Amount and donor_name are required"}), 400
 
-        # Validate amount
         try:
             amount = float(data["amount"])
             if amount <= 0:
@@ -31,20 +30,17 @@ def create_donation():
         except (ValueError, TypeError):
             return jsonify({"error": "Amount must be a positive number"}), 400
 
-        # Get current user
         user_id = get_jwt_identity()
         user = User.query.get(user_id)
         if not user:
             return jsonify({"error": "User not found"}), 404
 
-        # Validate case if provided
         case_id = data.get("case_id")
         if case_id:
             case = Case.query.get(case_id)
             if not case:
                 return jsonify({"error": "Case not found"}), 404
             
-            # Update case amount_received
             case.amount_received += amount
             
         donation = Donation(

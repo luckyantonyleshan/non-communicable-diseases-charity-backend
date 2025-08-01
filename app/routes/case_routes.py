@@ -28,14 +28,12 @@ def create_case():
     try:
         data = request.get_json()
         
-        # Validate required fields
         required_fields = ["title", "description", "amount_needed"]
         if not data or any(field not in data for field in required_fields):
             return jsonify({
                 "error": "Title, description, and amount_needed are required fields"
             }), 400
         
-        # Validate amount_needed is a positive number
         try:
             amount_needed = float(data["amount_needed"])
             if amount_needed <= 0:
@@ -45,13 +43,11 @@ def create_case():
                 "error": "amount_needed must be a positive number"
             }), 400
 
-        # Get current user
         user_id = get_jwt_identity()
         user = User.query.get(user_id)
         if not user:
             return jsonify({"error": "User not found"}), 404
 
-        # Create case
         case = Case(
             title=data["title"],
             description=data["description"],

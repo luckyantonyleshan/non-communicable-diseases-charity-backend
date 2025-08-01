@@ -22,7 +22,7 @@ def get_resources():
 @jwt_required()
 def create_resource():
     try:
-        # Check if user is admin
+
         user_id = get_jwt_identity()
         current_user = User.query.get(user_id)
         if not current_user or current_user.role != "admin":

@@ -10,17 +10,14 @@ def register():
     try:
         data = request.get_json()
         
-        # Validate required fields
         required = ['username', 'email', 'password']
         if not all(field in data for field in required):
             return jsonify({"error": "Missing required fields"}), 400
         
-        # Check if user exists
         if User.query.filter((User.username == data['username']) | 
                             (User.email == data['email'])).first():
             return jsonify({"error": "Username or email already exists"}), 400
         
-        # Create user
         user = User(
             username=data['username'],
             email=data['email'],
@@ -30,7 +27,6 @@ def register():
         db.session.add(user)
         db.session.commit()
         
-        # Generate token
         access_token = create_access_token(identity=user.id)
         
         return jsonify({
@@ -53,16 +49,13 @@ def login():
     try:
         data = request.get_json()
         
-        # Validate
         if not data or 'username' not in data or 'password' not in data:
             return jsonify({"error": "Username and password required"}), 400
         
-        # Find user
         user = User.query.filter_by(username=data['username']).first()
         if not user or not user.check_password(data['password']):
             return jsonify({"error": "Invalid credentials"}), 401
         
-        # Generate token
         access_token = create_access_token(identity=user.id)
         
         return jsonify({

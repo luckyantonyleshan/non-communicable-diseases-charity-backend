@@ -6,7 +6,7 @@ class Area(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    latitude = db.Column(db.Float, nullable=True)  # For map integration
+    latitude = db.Column(db.Float, nullable=True)  
     longitude = db.Column(db.Float, nullable=True)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 

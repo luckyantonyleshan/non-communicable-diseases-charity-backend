@@ -7,9 +7,8 @@ from datetime import timedelta
 db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
-cors = CORS()  # CHANGED: Initialize empty, configured in create_app()
+cors = CORS() 
 
-# EVERYTHING BELOW REMAINS **EXACTLY THE SAME**
 def configure_jwt(app):
     app.config['JWT_SECRET_KEY'] = app.config['SECRET_KEY']
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)

@@ -12,7 +12,6 @@ class User(db.Model):
     role = db.Column(db.String(20), default='user')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relationships using back_populates for consistency
     cases = db.relationship('Case', back_populates='user', cascade='all, delete-orphan')
     donations = db.relationship('Donation', back_populates='user', cascade='all, delete-orphan')
     reviews = db.relationship('Review', back_populates='user', cascade='all, delete-orphan')

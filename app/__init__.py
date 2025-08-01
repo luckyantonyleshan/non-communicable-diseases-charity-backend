@@ -6,15 +6,13 @@ def create_app():
     """Application factory function"""
     app = Flask(__name__, instance_relative_config=True)
     
-    # Load configuration
+
     app.config.from_object('app.config.Config')
     
-    # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
     
-    # Configure CORS (ONLY CHANGE: Added supports_credentials and OPTIONS)
     CORS(
         app,
         resources={
@@ -32,13 +30,10 @@ def create_app():
         }
     )
     
-    # Configure JWT after initialization (UNCHANGED)
     configure_jwt(app)
     
-    # Register blueprints (UNCHANGED)
     register_blueprints(app)
     
-    # Add CORS headers (ONLY CHANGE: Added after_request handler)
     @app.after_request
     def after_request(response):
         response.headers.add("Access-Control-Allow-Credentials", "true")
@@ -46,7 +41,6 @@ def create_app():
     
     return app
 
-# REST OF THE FILE REMAINS **EXACTLY THE SAME** (including register_blueprints)
 def register_blueprints(app):
     """Register all blueprints with the app"""
     from app.routes.auth_routes import auth_bp

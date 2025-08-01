@@ -34,12 +34,12 @@ def create_review():
         if len(data['content']) < 10 or len(data['content']) > 1000:
             return jsonify({'error': 'Content must be between 10 and 1000 characters'}), 400
 
-        # Validate area exists
+
         area = Area.query.get(data['area_id'])
         if not area:
             return jsonify({'error': 'Area not found'}), 404
 
-        # Validate disease if provided
+
         disease_id = data.get('disease_id')
         if disease_id:
             disease = Disease.query.get(disease_id)

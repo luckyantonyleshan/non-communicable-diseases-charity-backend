@@ -7,10 +7,8 @@ from app.models.case import Case
 from app.models.donation import Donation
 from app.extensions import db
 
-# Initialize admin Blueprint
 admin_bp = Blueprint('admin_bp', __name__, url_prefix='/api/admin')
 
-# Custom admin required decorator
 def admin_required(fn):
     @jwt_required()
     @wraps(fn)
@@ -78,14 +76,12 @@ def manage_user(user_id):
     elif request.method == 'PUT':
         data = request.get_json()
         
-        # Validate input
         if not data:
             return jsonify({
                 'success': False,
                 'error': 'No data provided'
             }), 400
             
-        # Update user fields
         if 'role' in data and data['role'] in ['user', 'admin']:
             user.role = data['role']
             

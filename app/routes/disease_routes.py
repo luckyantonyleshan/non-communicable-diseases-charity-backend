@@ -22,13 +22,11 @@ def create_disease():
         if not all(key in data for key in ["name", "description", "prevalence"]):
             return jsonify({"error": "Name, description, and prevalence are required"}), 400
 
-        # Check if user is admin
         user_id = get_jwt_identity()
         current_user = User.query.get(user_id)
         if not current_user or current_user.role != "admin":
             return jsonify({"error": "Admin access required"}), 403
 
-        # Validate prevalence
         try:
             prevalence = float(data["prevalence"])
             if prevalence < 0 or prevalence > 100:
