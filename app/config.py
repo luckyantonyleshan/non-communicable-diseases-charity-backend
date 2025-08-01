@@ -5,13 +5,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    # Database configuration with proper error handling
+    # Database configuration (UNCHANGED)
     try:
         DB_URI = os.environ['DATABASE_URI']
         if DB_URI.startswith('postgres://'):
             DB_URI = DB_URI.replace('postgres://', 'postgresql://', 1)
         
-        # Handle password special characters
         if '@' in DB_URI:
             parts = DB_URI.split('@')
             auth_part = parts[0]
@@ -29,4 +28,8 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key-for-development-only')
-    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', SECRET_KEY)  # Use SECRET_KEY as fallback
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', SECRET_KEY)
+
+    # ONLY ADDITION: CORS/Session settings
+    SESSION_COOKIE_SECURE = True  # Ensures cookies are sent over HTTPS
+    SESSION_COOKIE_SAMESITE = 'Lax'  # Balances security and cross-origin needs

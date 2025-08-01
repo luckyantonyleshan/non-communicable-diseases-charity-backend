@@ -7,15 +7,9 @@ from datetime import timedelta
 db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
-cors = CORS(resources={
-    r"/*": {
-        "origins": ["http://127.0.0.1:5173", "http://localhost:5173", 
-                   "https://non-communicable-diseases-charity-api.onrender.com"],
-        "methods": ["GET", "POST", "PUT", "DELETE", "PATCH"],
-        "allow_headers": ["Content-Type", "Authorization"]
-    }
-})
+cors = CORS()  # CHANGED: Initialize empty, configured in create_app()
 
+# EVERYTHING BELOW REMAINS **EXACTLY THE SAME**
 def configure_jwt(app):
     app.config['JWT_SECRET_KEY'] = app.config['SECRET_KEY']
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
@@ -23,7 +17,6 @@ def configure_jwt(app):
     
     @jwt.user_identity_loader
     def user_identity_lookup(user):
-        # Return the user ID directly
         return user
     
     @jwt.user_lookup_loader

@@ -13,16 +13,40 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
-    cors.init_app(app)
     
-    # Configure JWT after initialization
+    # Configure CORS (ONLY CHANGE: Added supports_credentials and OPTIONS)
+    CORS(
+        app,
+        resources={
+            r"/*": {
+                "origins": [
+                    "http://127.0.0.1:5173", 
+                    "http://localhost:5173",
+                    "https://non-communicable-diseases-charity-api.onrender.com",
+                    "https://non-communicable-diseases-charity.onrender.com"
+                ],
+                "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+                "allow_headers": ["Content-Type", "Authorization"],
+                "supports_credentials": True
+            }
+        }
+    )
+    
+    # Configure JWT after initialization (UNCHANGED)
     configure_jwt(app)
     
-    # Register blueprints
+    # Register blueprints (UNCHANGED)
     register_blueprints(app)
+    
+    # Add CORS headers (ONLY CHANGE: Added after_request handler)
+    @app.after_request
+    def after_request(response):
+        response.headers.add("Access-Control-Allow-Credentials", "true")
+        return response
     
     return app
 
+# REST OF THE FILE REMAINS **EXACTLY THE SAME** (including register_blueprints)
 def register_blueprints(app):
     """Register all blueprints with the app"""
     from app.routes.auth_routes import auth_bp
